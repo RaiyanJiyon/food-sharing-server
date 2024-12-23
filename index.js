@@ -49,6 +49,17 @@ async function run() {
             }
         })
 
+        app.get('/foods/by-emails/:email', async (req, res) => {
+            try {
+                const email = req.params.email;
+                const query = { email: email };
+                const result = await foodCollection.find(query).toArray();
+                res.status(200).send(result);
+            } catch (error) {
+                res.status(500).send({ error: "Failed to fetch foods by emails" });
+            }
+        })
+
         app.post('/foods', async (req, res) => {
             try {
                 const newFood = req.body;
