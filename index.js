@@ -25,6 +25,32 @@ async function run() {
     try {
         // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
+
+        const foodCollection = client.db("foodDB").collection("foods");
+
+        app.get('/foods', async (req, res) => {
+            try {
+                const query = foodCollection.find();
+                const result = await query.toArray();
+                res.status(200).send(result);
+            } catch (error) {
+                res.status(500).send({ error: "Failed to fetch foods" });
+            }
+        });
+
+        app.post('/foods', async (req, res) => {
+            try {
+                const newFood = req.body;
+                console.log(newFood)
+                const result = await foodCollection.insertOne(newFood);
+                res.status(200).send(result);
+            } catch (error) {
+                res.status(500).send({ error: "Failed to add food" });
+            }
+        });
+
+
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
