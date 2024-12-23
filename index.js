@@ -1,7 +1,7 @@
 const express = require('express');
 const cors = require('cors');
 require('dotenv').config()
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const app = express();
 const port = process.env.PORT || 5000;
 
@@ -37,6 +37,17 @@ async function run() {
                 res.status(500).send({ error: "Failed to fetch foods" });
             }
         });
+
+        app.get('/foods/:id', async (req, res) => {
+            try {
+                const id = req.params.id;
+                const query = { _id: new ObjectId(id) };
+                const result = await foodCollection.findOne(query);
+                res.status(200).send(result);
+            } catch (error) {
+                res.status(500).send({ error: "Failed to fetch individual foods" });
+            }
+        })
 
         app.post('/foods', async (req, res) => {
             try {
