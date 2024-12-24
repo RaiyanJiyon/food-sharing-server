@@ -95,6 +95,17 @@ async function run() {
             }
         });
 
+        app.delete('/food/:id', async (req, res) => {
+            try {
+                const id = req.params.id;
+                const query = { _id: new ObjectId(id) };
+                const result = await foodCollection.deleteOne(query);
+                res.status(200).send(result);
+            } catch (error) {
+                res.status(500).send({ error: "Failed to delete individual food" });
+            }
+        })
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
