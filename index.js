@@ -36,6 +36,15 @@ async function run() {
                 res.status(500).send({ error: "Failed to fetch foods" });
             }
         });
+        
+        app.get('/featured-foods', async (req, res) => {
+            try {
+                const result = await foodCollection.find().sort({ foodQuantity: -1 }).limit(6).toArray();
+                res.status(200).send(result);
+            } catch (error) {
+                res.status(500).send({ error: "Failed to fetch featured foods" });
+            }
+        });        
 
         app.get('/foods/:id', async (req, res) => {
             try {
@@ -95,16 +104,21 @@ async function run() {
             }
         });
 
-        app.delete('/food/:id', async (req, res) => {
+        app.delete('/foods/:id', async (req, res) => {
             try {
                 const id = req.params.id;
                 const query = { _id: new ObjectId(id) };
                 const result = await foodCollection.deleteOne(query);
-                res.status(200).send(result);
+                if (result.deletedCount === 1) {
+                    res.status(200).send(result);
+                } else {
+                    res.status(404).send({ error: "Food item not found" });
+                }
             } catch (error) {
                 res.status(500).send({ error: "Failed to delete individual food" });
             }
-        })
+        });
+
 
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
