@@ -5,7 +5,7 @@ The backend server for the FoodShare platform, enabling seamless food sharing, m
 Provides RESTful APIs to handle CRUD operations, user authentication, and secure data management for the FoodShare platform.  
 
 ## Live API URL 🌐  
-Base URL: [https://your-api-url.com](https://your-api-url.com)  
+Base URL: [https://your-api-url.com](https://food-sharing-server-pied.vercel.app/)  
 
 ## Key Features ✨  
 - **CRUD Operations**: Create, Read, Update, and Delete functionalities for food and requests.  
