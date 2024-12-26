@@ -88,8 +88,10 @@ async function run() {
         app.get('/featured-foods', async (req, res) => {
             try {
                 const result = await foodCollection.find().sort({ foodQuantity: -1 }).limit(6).toArray();
+                console.log('Fetched Featured Foods:', result);
                 res.status(200).send(result);
             } catch (error) {
+                console.error('Error fetching featured foods:', error);
                 res.status(500).send({ error: "Failed to fetch featured foods" });
             }
         });
@@ -152,7 +154,7 @@ async function run() {
                 res.status(500).send({ error: "Failed to update food" });
             }
         });
-        
+
 
         app.delete('/foods/:id', verifyJWT, async (req, res) => {
             try {
