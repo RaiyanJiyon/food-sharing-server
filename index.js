@@ -13,6 +13,7 @@ app.use(
     cors({
         origin: [
             "http://localhost:5173",
+            "http://localhost:5174",
             "https://precious-taffy-271e2b.netlify.app",
         ],
         credentials: true,
@@ -48,7 +49,7 @@ const verifyJWT = (req, res, next) => {
 
 async function run() {
     try {
-        await client.connect();
+        // await client.connect();
 
         const foodCollection = client.db("foodDB").collection("foods");
 
@@ -74,7 +75,7 @@ async function run() {
                 .send({ success: true })
         });
 
-        app.get('/foods', verifyJWT, async (req, res) => {
+        app.get('/foods', async (req, res) => {
             try {
                 const query = foodCollection.find();
                 const result = await query.toArray();
@@ -84,7 +85,7 @@ async function run() {
             }
         });
 
-        app.get('/featured-foods', verifyJWT, async (req, res) => {
+        app.get('/featured-foods', async (req, res) => {
             try {
                 const result = await foodCollection.find().sort({ foodQuantity: -1 }).limit(6).toArray();
                 res.status(200).send(result);
@@ -93,7 +94,7 @@ async function run() {
             }
         });
 
-        app.get('/foods/:id', verifyJWT, async (req, res) => {
+        app.get('/foods/:id', async (req, res) => {
             try {
                 const id = req.params.id;
                 const query = { _id: new ObjectId(id) };
@@ -140,6 +141,8 @@ async function run() {
                     expiredDate: updatedFoods.expiredDate,
                     additionalNotes: updatedFoods.additionalNotes,
                     foodStatus: updatedFoods.foodStatus,
+                    requestDate: updatedFoods.requestDate, // Added requestDate
+                    requestedBy: updatedFoods.requestedBy, // Added requestedBy
                 },
             };
             try {
@@ -149,6 +152,7 @@ async function run() {
                 res.status(500).send({ error: "Failed to update food" });
             }
         });
+        
 
         app.delete('/foods/:id', verifyJWT, async (req, res) => {
             try {
@@ -165,7 +169,7 @@ async function run() {
             }
         });
 
-        await client.db("admin").command({ ping: 1 });
+        // await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
